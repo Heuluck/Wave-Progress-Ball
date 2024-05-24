@@ -86,7 +86,7 @@ export function ProgressBall(props: ProgressBallProps) {
         //在整个轴长上取点
         for (let x = waveOffsetX; x < waveOffsetX + caHeight; x += 20 / caHeight) {
             //此处坐标(x,y)的取点，依靠公式 “振幅高*sin(x*振幅宽 + 振幅偏移量)”
-            let y = 0.8 * Math.sin(-x * waveWidth + xOffset);
+            let y = 0.8 * Math.sin(-x * setting.current.waveWidth + xOffset);
             let dY = caHeight * (1 - currentRange.current / 100);
             points.push([x, dY + y * waveHeight]);
             ctx.lineTo(x, dY + y * waveHeight);
@@ -128,8 +128,8 @@ export function ProgressBall(props: ProgressBallProps) {
             currentRange.current -= 1;
         }
 
-        drawSin(ctx, xOffset + Math.PI * 0.7, setting.current.bgWaveColor, waveHeight, caWidth, caHeight);
-        drawSin(ctx, xOffset, setting.current.waveColor, waveHeight, caWidth, caHeight);
+        drawSin(ctx, xOffset + Math.PI * 0.7, setting.current.bgWaveColor, setting.current.waveHeight, caWidth, caHeight);
+        drawSin(ctx, xOffset, setting.current.waveColor, setting.current.waveHeight, caWidth, caHeight);
         xOffset += setting.current.speed;
         requestAnimationFrame(() => render(ctx, caWidth, caHeight, circleYCenter, circleRadius));
     };
@@ -159,8 +159,9 @@ export function ProgressBall(props: ProgressBallProps) {
             const canvas: HTMLCanvasElement = ctxRef.current;
             const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
             ctx.restore();
+            ctx.lineWidth = setting.current.lineWidth;
         }
-    }, [lineColor]);
+    }, [lineColor,lineWidth]);
 
     useEffect(() => {
         if (ctxRef.current) {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import { BallSetting, ProgressBall } from "./components/ball/ball";
+import { ProgressBall } from "./components/ball/ball";
 import { Card, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
 import autoAnimate from "@formkit/auto-animate";
 import { BallSettingIS } from "./components/ball/defaultSetting";
@@ -49,8 +49,16 @@ function App() {
             tab: "基础设置",
         },
         {
-            key: "color",
-            tab: "颜色设置",
+            key: "outfit",
+            tab: "外观设置",
+        },
+        {
+            key: "wave",
+            tab: "波浪设置",
+        },
+        {
+            key: "others",
+            tab: "其他设置",
         },
     ];
 
@@ -73,7 +81,7 @@ function App() {
                 </Form.Item>
             </>
         ),
-        color: (
+        outfit: (
             <>
                 <Card style={{ marginTop: 16 }} type="inner" title="圆形外壳">
                     <Form.Item label="外壳颜色">
@@ -84,6 +92,17 @@ function App() {
                             }}
                             showText
                             format="rgb"
+                        />
+                    </Form.Item>
+                    <Form.Item label="外壳粗细">
+                        <Slider
+                            defaultValue={setting.current.lineWidth}
+                            onChange={(e) => {
+                                setLineWidth(e);
+                            }}
+                            min={1}
+                            max={10}
+                            step={1}
                         />
                     </Form.Item>
                 </Card>
@@ -192,6 +211,23 @@ function App() {
                         </>
                     )}
                 </Card>
+            </>
+        ),
+        wave: (
+            <>
+                <Form.Item label="波浪宽度">
+                    <Slider key="waw" defaultValue={waveWidth} onChange={setWaveWidth} min={0} max={0.1} step={0.001} />
+                </Form.Item>
+                <Form.Item label="波浪高度">
+                    <Slider key="wah" defaultValue={waveHeight} onChange={setWaveHeight} min={0} max={30} step={1} />
+                </Form.Item>
+            </>
+        ),
+        others: (
+            <>
+                <Form.Item label="初始高度（注：无法预览）">
+                    <Slider key="inh" defaultValue={initialRange} onChange={setInitialRange} min={0} max={100} step={1} />
+                </Form.Item>
             </>
         ),
     };
