@@ -6,28 +6,36 @@ import autoAnimate from "@formkit/auto-animate";
 
 function App() {
     const [activeTabKey, setActiveTabKey] = useState<string>("common");
+    const [value, setValue] = useState(50);
+    const [initialRange, setInitialRange] = useState<number>(50);
+    const [lineWidth, setLineWidth] = useState<number>(1);
+    const [lineColor, setLineColor] = useState<string>("#bdc3c7");
+    const [waveWidth, setWaveWidth] = useState<number>(0.018);
+    const [waveHeight, setWaveHeight] = useState<number>(18);
+    const [speed, setSpeed] = useState<number>(0.01);
+    const [waveColor, setWaveColor] = useState<string | { start: string; end: string }>({
+        start: "#43CF73",
+        end: "#BCEC4F",
+    });
+    const [bgWaveColor, setBgWaveColor] = useState<string | { start: string; end: string }>({
+        start: "rgba(130, 221, 95,0.5)",
+        end: "rgba(130, 221, 97,0.5)",
+    });
+    const [isGradient, setIsGradient] = useState<boolean>(true);
     const parent = useRef(null);
-
     useEffect(() => {
         parent.current && autoAnimate(parent.current);
     }, [parent]);
-    const [value, setValue] = useState(50);
     const setting = useRef<BallSetting>({
-        initialRange: 50,
-        circle: {
-            lineWidth: 1,
-            lineColor: "#bdc3c7",
-        },
-        wave: {
-            waveWidth: 0.018,
-            waveHeight: 18,
-            speed: 0.01,
-            // waveColor: "#69d569",
-            // bgWaveColor: "rgba(158, 226, 89,.5)",
-            waveColor: { start: "#43CF73", end: "#BCEC4F" },
-            bgWaveColor: { start: "rgba(130, 221, 95,0.5)", end: "rgba(130, 221, 97,0.5)" },
-            isGradient: true,
-        },
+        initialRange,
+        lineWidth,
+        lineColor,
+        waveWidth,
+        waveHeight,
+        speed,
+        waveColor,
+        bgWaveColor,
+        isGradient,
     });
     const tabList = [
         {
@@ -48,9 +56,9 @@ function App() {
                 </Form.Item>
                 <Form.Item label="流动速度">
                     <Slider
-                        defaultValue={setting.current.wave.speed}
+                        defaultValue={setting.current.speed}
                         onChange={(e) => {
-                            setting.current.wave.speed = e;
+                            setSpeed(e);
                         }}
                         min={0}
                         max={0.2}
@@ -63,7 +71,14 @@ function App() {
             <>
                 <Card style={{ marginTop: 16 }} type="inner" title="圆形外壳">
                     <Form.Item label="外壳颜色">
-                        <ColorPicker defaultValue={setting.current.circle.lineColor} onChange={color=>{setting.current.circle.lineColor=color.toRgbString()}} showText format="rgb" />
+                        <ColorPicker
+                            defaultValue={setting.current.lineColor}
+                            onChange={(color) => {
+                                setLineColor(color.toRgbString());
+                            }}
+                            showText
+                            format="rgb"
+                        />
                     </Form.Item>
                 </Card>
             </>
@@ -71,7 +86,18 @@ function App() {
     };
     return (
         <>
-            <ProgressBall value={value} ballSetting={setting.current} />
+            <ProgressBall
+                value={value}
+                initialRange={initialRange}
+                lineWidth={lineWidth}
+                lineColor={lineColor}
+                waveWidth={waveWidth}
+                waveHeight={waveHeight}
+                speed={speed}
+                waveColor={waveColor}
+                bgWaveColor={bgWaveColor}
+                isGradient={isGradient}
+            />
             <Card title="设置" hoverable tabList={tabList} activeTabKey={activeTabKey} onTabChange={setActiveTabKey}>
                 <Flex gap="middle" vertical ref={parent}>
                     {contentList[activeTabKey]}
