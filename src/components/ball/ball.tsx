@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import useDeepCompareEffect from "use-deep-compare-effect";
 import { initialSetting } from "./defaultSetting";
 
 interface ProgressBallProps {
@@ -51,6 +52,7 @@ export function ProgressBall(props: ProgressBallProps) {
         ctx.strokeStyle = ballSetting.circle.lineColor;
         ctx.arc(circleYCenter, circleYCenter, circleRadius + 1, 0, 2 * Math.PI);
         ctx.stroke();
+        ctx.save();
         ctx.beginPath();
         ctx.arc(circleYCenter, circleYCenter, circleRadius, 0, 2 * Math.PI);
         ctx.clip();
@@ -66,7 +68,7 @@ export function ProgressBall(props: ProgressBallProps) {
         caWidth: number,
         caHeight: number
     ) => {
-        ctx.save();
+        // ctx.save();
         const waveOffsetX = 0;
         const points = []; //用于存放绘制Sin曲线的点
         ctx.beginPath();
@@ -87,13 +89,17 @@ export function ProgressBall(props: ProgressBallProps) {
             gradient.addColorStop(0, (color as { start: string; end: string }).start);
             gradient.addColorStop(1, (color as { start: string; end: string }).end);
             ctx.fillStyle = gradient;
-        } else if (!ballSetting.wave.isGradient && typeof(color) === 'string') ctx.fillStyle = color as string;
+        } else if (!ballSetting.wave.isGradient && typeof color === "string") ctx.fillStyle = color as string;
         else if (ballSetting.wave.isGradient && !isGradient(color))
-            throw new Error("Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be {start:string,end:string} when isGradient is true");
-        else if (!ballSetting.wave.isGradient && !(typeof(color) === 'string'))
-            throw new Error("Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be color when isGradient is false");
+            throw new Error(
+                "Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be {start:string,end:string} when isGradient is true"
+            );
+        else if (!ballSetting.wave.isGradient && !(typeof color === "string"))
+            throw new Error(
+                "Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be color when isGradient is false"
+            );
         ctx.fill();
-        ctx.restore();
+        // ctx.restore();
     };
 
     const render = (
@@ -105,10 +111,9 @@ export function ProgressBall(props: ProgressBallProps) {
     ) => {
         ctx.clearRect(0, 0, caWidth, caHeight);
 
-        if (isCircleDraw.current === false) {
+        if (isCircleDraw.current == false) {
             drawCircle(ctx, circleYCenter, circleRadius);
         }
-        // console.log(value);
         drawSin(
             ctx,
             xOffset + Math.PI * 0.7,
@@ -125,6 +130,16 @@ export function ProgressBall(props: ProgressBallProps) {
     useEffect(() => {
         currentRange.current = value;
     }, [value]);
+
+    useDeepCompareEffect(() => {
+        console.log("useEffect");
+        isCircleDraw.current = false;
+        if (ctxRef.current) {
+            const canvas: HTMLCanvasElement = ctxRef.current;
+            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+            ctx.restore();
+        }
+    }, [ballSetting.wave]);
 
     useEffect(() => {
         if (ctxRef.current) {
