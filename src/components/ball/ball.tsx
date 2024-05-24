@@ -45,6 +45,7 @@ export function ProgressBall(props: ProgressBallProps) {
     const isCircleDraw = useRef(false);
     const initialRange = ballSetting.initialRange; //用于做一个临时的range
     let currentRange = useRef(initialRange);
+    const targetRange = useRef(value);
     let xOffset = 0;
 
     const drawCircle = (ctx: CanvasRenderingContext2D, circleYCenter: number, circleRadius: number) => {
@@ -114,6 +115,13 @@ export function ProgressBall(props: ProgressBallProps) {
         if (isCircleDraw.current == false) {
             drawCircle(ctx, circleYCenter, circleRadius);
         }
+
+        if (currentRange.current < targetRange.current) {
+            currentRange.current += 1;
+        } else if (currentRange.current > targetRange.current) {
+            currentRange.current -= 1;
+        }
+        
         drawSin(
             ctx,
             xOffset + Math.PI * 0.7,
@@ -128,7 +136,7 @@ export function ProgressBall(props: ProgressBallProps) {
     };
 
     useEffect(() => {
-        currentRange.current = value;
+        targetRange.current = value;
     }, [value]);
 
     useDeepCompareEffect(() => {
