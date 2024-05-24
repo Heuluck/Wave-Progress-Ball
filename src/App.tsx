@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
+import { BallSettingIS } from "./components/ball/defaultSetting";
 import { ProgressBall } from "./components/ball/ball";
 import { Card, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
 import autoAnimate from "@formkit/auto-animate";
-import { BallSettingIS } from "./components/ball/defaultSetting";
+import "./App.css";
 
 interface gradient {
     start: string;
@@ -32,7 +32,7 @@ function App() {
     useEffect(() => {
         parent.current && autoAnimate(parent.current);
     }, [parent]);
-    const setting = useRef<BallSettingIS>({
+    const setting: BallSettingIS = {
         initialRange,
         lineWidth,
         lineColor,
@@ -42,7 +42,7 @@ function App() {
         waveColor,
         bgWaveColor,
         isGradient,
-    });
+    };
     const tabList = [
         {
             key: "common",
@@ -70,7 +70,7 @@ function App() {
                 </Form.Item>
                 <Form.Item label="流动速度">
                     <Slider
-                        defaultValue={setting.current.speed}
+                        defaultValue={speed}
                         onChange={(e) => {
                             setSpeed(e);
                         }}
@@ -86,7 +86,7 @@ function App() {
                 <Card style={{ marginTop: 16 }} type="inner" title="圆形外壳">
                     <Form.Item label="外壳颜色">
                         <ColorPicker
-                            defaultValue={setting.current.lineColor}
+                            defaultValue={lineColor}
                             onChange={(color) => {
                                 setLineColor(color.toRgbString());
                             }}
@@ -96,7 +96,7 @@ function App() {
                     </Form.Item>
                     <Form.Item label="外壳粗细">
                         <Slider
-                            defaultValue={setting.current.lineWidth}
+                            defaultValue={lineWidth}
                             onChange={(e) => {
                                 setLineWidth(e);
                             }}
@@ -134,10 +134,10 @@ function App() {
                     {isGradient ? (
                         <>
                             <Form.Item label="前景波浪颜色">
-                                <Space>
+                                <Space direction="vertical">
                                     <ColorPicker
                                         key={1}
-                                        defaultValue={(setting.current.waveColor as gradient).start}
+                                        defaultValue={(waveColor as gradient).start}
                                         onChange={(color) => {
                                             setWaveColor((current) => {
                                                 return { start: color.toRgbString(), end: (current as gradient).end };
@@ -148,7 +148,7 @@ function App() {
                                     />
                                     <ColorPicker
                                         key={2}
-                                        defaultValue={(setting.current.waveColor as gradient).end}
+                                        defaultValue={(waveColor as gradient).end}
                                         onChange={(color) => {
                                             setWaveColor((current) => {
                                                 return { start: (current as gradient).start, end: color.toRgbString() };
@@ -160,10 +160,10 @@ function App() {
                                 </Space>
                             </Form.Item>
                             <Form.Item label="背景波浪颜色">
-                                <Space>
+                                <Space direction="vertical">
                                     <ColorPicker
                                         key={3}
-                                        defaultValue={(setting.current.bgWaveColor as gradient).start}
+                                        defaultValue={(bgWaveColor as gradient).start}
                                         onChange={(color) => {
                                             setBgWaveColor((current) => {
                                                 return { start: color.toRgbString(), end: (current as gradient).end };
@@ -174,7 +174,7 @@ function App() {
                                     />
                                     <ColorPicker
                                         key={4}
-                                        defaultValue={(setting.current.bgWaveColor as gradient).end}
+                                        defaultValue={(bgWaveColor as gradient).end}
                                         onChange={(color) => {
                                             setBgWaveColor((current) => {
                                                 return { start: (current as gradient).start, end: color.toRgbString() };
@@ -226,27 +226,23 @@ function App() {
         others: (
             <>
                 <Form.Item label="初始高度（注：无法预览）">
-                    <Slider key="inh" defaultValue={initialRange} onChange={setInitialRange} min={0} max={100} step={1} />
+                    <Slider
+                        key="inh"
+                        defaultValue={initialRange}
+                        onChange={setInitialRange}
+                        min={0}
+                        max={100}
+                        step={1}
+                    />
                 </Form.Item>
             </>
         ),
     };
     return (
         <>
-            <ProgressBall
-                value={value}
-                initialRange={initialRange}
-                lineWidth={lineWidth}
-                lineColor={lineColor}
-                waveWidth={waveWidth}
-                waveHeight={waveHeight}
-                speed={speed}
-                waveColor={waveColor}
-                bgWaveColor={bgWaveColor}
-                isGradient={isGradient}
-            />
-            <Card title="设置" hoverable tabList={tabList} activeTabKey={activeTabKey} onTabChange={setActiveTabKey}>
-                <Flex gap="middle" vertical ref={parent}>
+            <ProgressBall value={value} {...setting} />
+            <Card title="设置" tabList={tabList} activeTabKey={activeTabKey} onTabChange={setActiveTabKey}>
+                <Flex gap="middle" vertical={activeTabKey !== "outfit"} ref={parent} justify="center" wrap>
                     {contentList[activeTabKey]}
                 </Flex>
             </Card>
