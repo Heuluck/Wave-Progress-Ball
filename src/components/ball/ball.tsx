@@ -102,13 +102,9 @@ export function ProgressBall(props: ProgressBallProps) {
             ctx.fillStyle = gradient;
         } else if (!isGradient && typeof color === "string") ctx.fillStyle = color as string;
         else if (isGradient && !checkIsGradient(color))
-            throw new Error(
-                "Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be {start:string,end:string} when isGradient is true"
-            );
-        else if (!isGradient && !(typeof color === "string"))
-            throw new Error(
-                "Property 'ballSetting.wave.waveColor' or 'ballSetting.wave.bgWaveColor' must be color when isGradient is false"
-            );
+            ctx.fillStyle = color as string
+        else if (!isGradient && checkIsGradient(color))
+            ctx.fillStyle = color.start
         ctx.fill();
         // ctx.restore();
     };
@@ -132,8 +128,8 @@ export function ProgressBall(props: ProgressBallProps) {
             currentRange.current -= 1;
         }
 
-        drawSin(ctx, xOffset + Math.PI * 0.7, bgWaveColor, waveHeight, caWidth, caHeight);
-        drawSin(ctx, xOffset, waveColor, waveHeight, caWidth, caHeight);
+        drawSin(ctx, xOffset + Math.PI * 0.7, setting.current.bgWaveColor, waveHeight, caWidth, caHeight);
+        drawSin(ctx, xOffset, setting.current.waveColor, waveHeight, caWidth, caHeight);
         xOffset += setting.current.speed;
         requestAnimationFrame(() => render(ctx, caWidth, caHeight, circleYCenter, circleRadius));
     };

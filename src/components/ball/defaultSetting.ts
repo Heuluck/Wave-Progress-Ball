@@ -1,4 +1,4 @@
-interface BallSetting {
+export interface BallSettingIS {
     //初始加载时的进度
     initialRange: number;
     //圆设置
@@ -16,12 +16,17 @@ interface BallSetting {
     //是否渐变
     isGradient: boolean;
     //波浪颜色
-    waveColor: string | { start: string; end: string };
+    waveColor: string | gradient;
     //背景波浪颜色
-    bgWaveColor: string | { start: string; end: string };
+    bgWaveColor: string | gradient;
 }
 
-export const initialSetting: BallSetting = {
+interface gradient {
+    start: string;
+    end: string;
+}
+
+export const initialSetting: BallSettingIS = {
     initialRange: 50,
     lineWidth: 1,
     lineColor: "#bdc3c7",
