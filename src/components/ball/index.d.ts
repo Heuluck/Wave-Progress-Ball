@@ -17,6 +17,8 @@ export interface BallSetting {
     waveHeight?: number;
     //速度
     speed?: number;
+    // 波浪品质
+    waveQuality?: number;
     //背景波浪偏移
     bgWaveOffset?: number;
     //反转
@@ -57,6 +59,8 @@ export interface BallSettingIS {
     waveHeight: number;
     //速度
     speed: number;
+    // 波浪品质
+    waveQuality: number;
     //背景波浪偏移
     bgWaveOffset: number;
     //反转

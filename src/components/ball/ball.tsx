@@ -13,6 +13,7 @@ export function ProgressBall(props: ProgressBallProps) {
         waveWidth = initialSetting.waveWidth,
         waveHeight = initialSetting.waveHeight,
         speed = initialSetting.speed,
+        waveQuality = initialSetting.waveQuality,
         bgWaveOffset = initialSetting.bgWaveOffset,
         isReverse = initialSetting.isReverse,
         isReverseBg = initialSetting.isReverseBg,
@@ -32,6 +33,7 @@ export function ProgressBall(props: ProgressBallProps) {
         waveWidth,
         waveHeight,
         speed,
+        waveQuality,
         bgWaveOffset,
         isReverse,
         isReverseBg,
@@ -72,12 +74,17 @@ export function ProgressBall(props: ProgressBallProps) {
         const points = []; //用于存放绘制Sin曲线的点
         ctx.beginPath();
         //在整个轴长上取点
-        for (let x = waveOffsetX; x < waveOffsetX + caHeight; x += 20 / caHeight) {
+        for (
+            let x = waveOffsetX;
+            x < waveOffsetX + caHeight;
+            x += (600 * (100 / setting.current.waveQuality)) / caHeight
+        ) {
             const y = 0.8 * Math.sin(((reverse ? x : -x) * setting.current.waveWidth * 500) / caWidth + offsetX);
             const offsetY = caHeight * (1 - currentRange.current / 100);
             points.push([x, offsetY + (y * waveHeight * caHeight) / 500]);
             ctx.lineTo(x, offsetY + (y * waveHeight * caHeight) / 500);
         }
+        console.log(points.length);
         //封闭路径
         ctx.lineTo(caWidth, caHeight);
         ctx.lineTo(waveOffsetX, caHeight);
@@ -172,6 +179,7 @@ export function ProgressBall(props: ProgressBallProps) {
             waveWidth,
             waveHeight,
             speed,
+            waveQuality,
             bgWaveOffset,
             isReverse,
             isReverseBg,
@@ -188,6 +196,7 @@ export function ProgressBall(props: ProgressBallProps) {
         waveWidth,
         waveHeight,
         speed,
+        waveQuality,
         bgWaveOffset,
         isReverse,
         isReverseBg,

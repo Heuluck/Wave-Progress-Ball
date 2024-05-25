@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BallSettingIS } from "./components/ball";
 import { ProgressBall } from "./components/ball/ball";
-import { Button, Card, Collapse, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
+import { Button, Card, Collapse, ColorPicker, Flex, Form, InputNumber, Slider, Space, Switch } from "antd";
 import autoAnimate from "@formkit/auto-animate";
 import "./App.css";
 
@@ -14,13 +14,14 @@ function App() {
     const [activeTabKey, setActiveTabKey] = useState<string>("common");
     const [value, setValue] = useState(50);
     const [size, setSize] = useState<number>(350);
-    const [magnifyAA, setMagnifyAA] = useState<number>(1);
+    const [magnifyAA, setMagnifyAA] = useState<number>(2);
     const [initialRange, setInitialRange] = useState<number>(50);
     const [lineWidth, setLineWidth] = useState<number>(1);
     const [lineColor, setLineColor] = useState<string>("#bdc3c7");
     const [waveWidth, setWaveWidth] = useState<number>(0.018);
     const [waveHeight, setWaveHeight] = useState<number>(20);
-    const [speed, setSpeed] = useState<number>(0.01);
+    const [speed, setSpeed] = useState<number>(0.002);
+    const [waveQuality, setWaveQuality] = useState<number>(3);
     const [bgWaveOffset, setBgWaveOffset] = useState<number>(0.7);
     const [isReverse, setIsReverse] = useState<boolean>(false);
     const [isReverseBg, setIsReverseBg] = useState<boolean>(false);
@@ -47,6 +48,7 @@ function App() {
         waveWidth,
         waveHeight,
         speed,
+        waveQuality,
         bgWaveOffset,
         isReverse,
         isReverseBg,
@@ -62,7 +64,7 @@ function App() {
         },
         {
             key: "outfit",
-            tab: "外观设置",
+            tab: "显示设置",
         },
         {
             key: "wave",
@@ -82,18 +84,29 @@ function App() {
         common: (
             <>
                 <Form.Item label="液面高度">
-                    <Slider key='height' defaultValue={value} onChange={setValue} min={0} max={100} step={1} />
+                    <Slider key="height" defaultValue={value} onChange={setValue} min={0} max={100} step={1} />
                 </Form.Item>
                 <Form.Item label="流动速度">
                     <Slider
-                        key='speed'
-                        defaultValue={speed}
+                        key="speed"
+                        value={speed}
                         onChange={(e) => {
                             setSpeed(e);
                         }}
                         min={0}
-                        max={0.2}
-                        step={0.01}
+                        max={0.02}
+                        step={0.001}
+                    />
+                    <InputNumber
+                        size="small"
+                        changeOnWheel
+                        min={0}
+                        step={0.001}
+                        max={10}
+                        value={speed}
+                        onChange={(e) => {
+                            e != null && setSpeed(e);
+                        }}
                     />
                 </Form.Item>
             </>
@@ -104,7 +117,14 @@ function App() {
                     <Slider key="size" defaultValue={size} onChangeComplete={setSize} min={70} max={1000} step={1} />
                 </Form.Item>
                 <Form.Item label="抗锯齿">
-                    <Slider key="maa" defaultValue={magnifyAA} onChangeComplete={setMagnifyAA} min={1} max={10} step={1} />
+                    <Slider
+                        key="maa"
+                        defaultValue={magnifyAA}
+                        onChangeComplete={setMagnifyAA}
+                        min={1}
+                        max={10}
+                        step={1}
+                    />
                 </Form.Item>
                 <Flex gap="middle" justify="center" wrap>
                     <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">
@@ -132,6 +152,16 @@ function App() {
                         </Form.Item>
                     </Card>
                     <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="波浪">
+                        <Form.Item label="波浪品质">
+                            <Slider
+                                key="maa"
+                                defaultValue={waveQuality}
+                                onChange={setWaveQuality}
+                                min={1}
+                                max={15}
+                                step={1}
+                            />
+                        </Form.Item>
                         <Form.Item label="渐变切换">
                             <Switch
                                 checkedChildren="渐变"

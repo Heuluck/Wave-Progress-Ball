@@ -9,6 +9,7 @@ export const initialSetting: BallSettingIS = {
     waveWidth: 0.018,
     waveHeight: 18,
     speed: 0.01,
+    waveQuality: 13,
     bgWaveOffset: 0.7,
     isReverse: false,
     isReverseBg: false,
