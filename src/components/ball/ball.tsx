@@ -1,32 +1,6 @@
 import { useEffect, useRef } from "react";
 import { initialSetting } from "./defaultSetting";
-
-export interface BallSetting {
-    //初始加载时的进度
-    initialRange?: number;
-    //圆设置
-    //圆线条宽度
-    lineWidth?: number;
-    //圆线条颜色
-    lineColor?: string;
-    //波浪设置
-    //宽度
-    waveWidth?: number;
-    //高度
-    waveHeight?: number;
-    //速度
-    speed?: number;
-    //是否渐变
-    isGradient?: boolean;
-    //波浪颜色
-    waveColor?: string | { start: string; end: string };
-    //背景波浪颜色
-    bgWaveColor?: string | { start: string; end: string };
-}
-interface ProgressBallProps extends BallSetting {
-    //当前进度
-    value: number;
-}
+import { BallSettingIS, ProgressBallProps } from "./";
 
 export function ProgressBall(props: ProgressBallProps) {
     const {
@@ -37,19 +11,27 @@ export function ProgressBall(props: ProgressBallProps) {
         waveWidth = initialSetting.waveWidth,
         waveHeight = initialSetting.waveHeight,
         speed = initialSetting.speed,
+        bgWaveOffset = initialSetting.bgWaveOffset,
+        isReverse = initialSetting.isReverse,
+        isReverseBg = initialSetting.isReverseBg,
+        isShowBg = initialSetting.isShowBg,
         isGradient = initialSetting.isGradient,
         waveColor = initialSetting.waveColor,
         bgWaveColor = initialSetting.bgWaveColor,
     } = props;
     const ctxRef = useRef(null);
     const isCircleDraw = useRef(false);
-    const setting = useRef({
+    const setting = useRef<BallSettingIS>({
         initialRange,
         lineWidth,
         lineColor,
         waveWidth,
         waveHeight,
         speed,
+        bgWaveOffset,
+        isReverse,
+        isReverseBg,
+        isShowBg,
         isGradient,
         waveColor,
         bgWaveColor,
@@ -73,11 +55,12 @@ export function ProgressBall(props: ProgressBallProps) {
     //画sin 曲线函数
     const drawSin = (
         ctx: CanvasRenderingContext2D,
-        xOffset: number,
+        offsetX: number,
         color: string | { start: string; end: string },
         waveHeight: number,
         caWidth: number,
-        caHeight: number
+        caHeight: number,
+        reverse: boolean = false
     ) => {
         // ctx.save();
         const waveOffsetX = 0;
@@ -85,8 +68,7 @@ export function ProgressBall(props: ProgressBallProps) {
         ctx.beginPath();
         //在整个轴长上取点
         for (let x = waveOffsetX; x < waveOffsetX + caHeight; x += 20 / caHeight) {
-            //此处坐标(x,y)的取点，依靠公式 “振幅高*sin(x*振幅宽 + 振幅偏移量)”
-            let y = 0.8 * Math.sin(-x * setting.current.waveWidth + xOffset);
+            let y = 0.8 * Math.sin((reverse ? x : -x) * setting.current.waveWidth + offsetX);
             let dY = caHeight * (1 - currentRange.current / 100);
             points.push([x, dY + y * waveHeight]);
             ctx.lineTo(x, dY + y * waveHeight);
@@ -101,10 +83,8 @@ export function ProgressBall(props: ProgressBallProps) {
             gradient.addColorStop(1, (color as { start: string; end: string }).end);
             ctx.fillStyle = gradient;
         } else if (!isGradient && typeof color === "string") ctx.fillStyle = color as string;
-        else if (isGradient && !checkIsGradient(color))
-            ctx.fillStyle = color as string
-        else if (!isGradient && checkIsGradient(color))
-            ctx.fillStyle = color.start
+        else if (isGradient && !checkIsGradient(color)) ctx.fillStyle = color as string;
+        else if (!isGradient && checkIsGradient(color)) ctx.fillStyle = color.start;
         ctx.fill();
         // ctx.restore();
     };
@@ -128,8 +108,25 @@ export function ProgressBall(props: ProgressBallProps) {
             currentRange.current -= 1;
         }
 
-        drawSin(ctx, xOffset + Math.PI * 0.7, setting.current.bgWaveColor, setting.current.waveHeight, caWidth, caHeight);
-        drawSin(ctx, xOffset, setting.current.waveColor, setting.current.waveHeight, caWidth, caHeight);
+        setting.current.isShowBg &&
+            drawSin(
+                ctx,
+                xOffset + Math.PI * setting.current.bgWaveOffset,
+                setting.current.bgWaveColor,
+                setting.current.waveHeight,
+                caWidth,
+                caHeight,
+                setting.current.isReverseBg
+            );
+        drawSin(
+            ctx,
+            xOffset,
+            setting.current.waveColor,
+            setting.current.waveHeight,
+            caWidth,
+            caHeight,
+            setting.current.isReverse
+        );
         xOffset += setting.current.speed;
         requestAnimationFrame(() => render(ctx, caWidth, caHeight, circleYCenter, circleRadius));
     };
@@ -147,11 +144,29 @@ export function ProgressBall(props: ProgressBallProps) {
             waveWidth,
             waveHeight,
             speed,
+            bgWaveOffset,
+            isReverse,
+            isReverseBg,
+            isShowBg,
             isGradient,
             waveColor,
             bgWaveColor,
         };
-    }, [initialRange, lineWidth, lineColor, waveWidth, waveHeight, speed, isGradient, waveColor, bgWaveColor]);
+    }, [
+        initialRange,
+        lineWidth,
+        lineColor,
+        waveWidth,
+        waveHeight,
+        speed,
+        bgWaveOffset,
+        isReverse,
+        isReverseBg,
+        isShowBg,
+        isGradient,
+        waveColor,
+        bgWaveColor,
+    ]);
 
     useEffect(() => {
         isCircleDraw.current = false;
@@ -161,7 +176,7 @@ export function ProgressBall(props: ProgressBallProps) {
             ctx.restore();
             ctx.lineWidth = setting.current.lineWidth;
         }
-    }, [lineColor,lineWidth]);
+    }, [lineColor, lineWidth]);
 
     useEffect(() => {
         if (ctxRef.current) {

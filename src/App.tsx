@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { BallSettingIS } from "./components/ball/defaultSetting";
+import { BallSettingIS } from "./components/ball";
 import { ProgressBall } from "./components/ball/ball";
-import { Card, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
+import { Button, Card, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
 import autoAnimate from "@formkit/auto-animate";
 import "./App.css";
 
@@ -19,6 +19,10 @@ function App() {
     const [waveWidth, setWaveWidth] = useState<number>(0.018);
     const [waveHeight, setWaveHeight] = useState<number>(18);
     const [speed, setSpeed] = useState<number>(0.01);
+    const [bgWaveOffset, setBgWaveOffset] = useState<number>(0.7);
+    const [isReverse, setIsReverse] = useState<boolean>(false);
+    const [isReverseBg, setIsReverseBg] = useState<boolean>(false);
+    const [isShowBg, setIsShowBg] = useState<boolean>(true);
     const [waveColor, setWaveColor] = useState<string | gradient>({
         start: "#43CF73",
         end: "#BCEC4F",
@@ -39,6 +43,10 @@ function App() {
         waveWidth,
         waveHeight,
         speed,
+        bgWaveOffset,
+        isReverse,
+        isReverseBg,
+        isShowBg,
         waveColor,
         bgWaveColor,
         isGradient,
@@ -59,6 +67,10 @@ function App() {
         {
             key: "others",
             tab: "其他设置",
+        },
+        {
+            key: "output",
+            tab: "导出设置",
         },
     ];
 
@@ -83,7 +95,7 @@ function App() {
         ),
         outfit: (
             <>
-                <Card style={{ marginTop: 16 }} type="inner" title="圆形外壳">
+                <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">
                     <Form.Item label="外壳颜色">
                         <ColorPicker
                             defaultValue={lineColor}
@@ -91,7 +103,7 @@ function App() {
                                 setLineColor(color.toRgbString());
                             }}
                             showText
-                            format="rgb"
+                            format="hex"
                         />
                     </Form.Item>
                     <Form.Item label="外壳粗细">
@@ -106,7 +118,7 @@ function App() {
                         />
                     </Form.Item>
                 </Card>
-                <Card style={{ marginTop: 16 }} type="inner" title="波浪">
+                <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="波浪">
                     <Form.Item label="渐变切换">
                         <Switch
                             checkedChildren="渐变"
@@ -221,6 +233,53 @@ function App() {
                 <Form.Item label="波浪高度">
                     <Slider key="wah" defaultValue={waveHeight} onChange={setWaveHeight} min={0} max={30} step={1} />
                 </Form.Item>
+                <Flex gap="middle" justify="center">
+                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="前景波浪">
+                        <Form.Item label="反转">
+                            <Switch
+                                checkedChildren="反转"
+                                unCheckedChildren="不反转"
+                                checked={isReverse}
+                                onChange={(checked) => {
+                                    setIsReverse(checked);
+                                }}
+                            />
+                        </Form.Item>
+                    </Card>
+                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="背景波浪">
+                        <Form.Item label="反转">
+                            <Switch
+                                checkedChildren="反转"
+                                unCheckedChildren="不反转"
+                                checked={isReverseBg}
+                                onChange={(checked) => {
+                                    setIsReverseBg(checked);
+                                }}
+                            />
+                        </Form.Item>
+                        <Form.Item label="显示">
+                            <Switch
+                                checkedChildren="显示"
+                                unCheckedChildren="隐藏"
+                                checked={isShowBg}
+                                onChange={(checked) => {
+                                    setIsShowBg(checked);
+                                }}
+                            />
+                        </Form.Item>
+                        <Form.Item label="偏移">
+                            <Slider
+                                defaultValue={bgWaveOffset}
+                                onChange={(e) => {
+                                    setBgWaveOffset(e);
+                                }}
+                                min={0}
+                                max={2}
+                                step={0.1}
+                            />
+                        </Form.Item>
+                    </Card>
+                </Flex>
             </>
         ),
         others: (
@@ -235,6 +294,28 @@ function App() {
                         step={1}
                     />
                 </Form.Item>
+            </>
+        ),
+        output: (
+            <>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        navigator.clipboard.writeText(JSON.stringify(setting, null, 2));
+                    }}>
+                    复制
+                </Button>
+                <span
+                    style={{
+                        textAlign: "left",
+                        userSelect: "text",
+                        whiteSpace: "pre-wrap",
+                        border: "1px solid black",
+                        padding: "8px",
+                        borderRadius: "8px",
+                    }}>
+                    {JSON.stringify(setting, null, 2)}
+                </span>
             </>
         ),
     };
