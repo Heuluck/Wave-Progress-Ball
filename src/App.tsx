@@ -127,7 +127,7 @@ function App() {
                     />
                 </Form.Item>
                 <Flex gap="middle" justify="center" wrap>
-                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">
+                    <Card style={{ marginTop: 16 }} type="inner" title="圆形外壳">
                         <Form.Item label="外壳颜色">
                             <ColorPicker
                                 defaultValue={lineColor}
@@ -151,7 +151,7 @@ function App() {
                             />
                         </Form.Item>
                     </Card>
-                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="波浪">
+                    <Card style={{ marginTop: 16 }} type="inner" title="波浪">
                         <Form.Item label="波浪品质">
                             <Slider
                                 key="maa"
@@ -164,6 +164,7 @@ function App() {
                         </Form.Item>
                         <Form.Item label="渐变切换">
                             <Switch
+                                key='isG'
                                 checkedChildren="渐变"
                                 unCheckedChildren="单色"
                                 defaultChecked={isGradient}
@@ -290,7 +291,7 @@ function App() {
                     <Slider key="wah" defaultValue={waveHeight} onChange={setWaveHeight} min={0} max={80} step={1} />
                 </Form.Item>
                 <Flex gap="middle" justify="center">
-                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="前景波浪">
+                    <Card style={{ marginTop: 16 }} key={1} type="inner" title="前景波浪">
                         <Form.Item label="反转">
                             <Switch
                                 checkedChildren="反转"
@@ -302,7 +303,7 @@ function App() {
                             />
                         </Form.Item>
                     </Card>
-                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="背景波浪">
+                    <Card style={{ marginTop: 16 }} key={2} type="inner" title="背景波浪">
                         <Form.Item label="反转">
                             <Switch
                                 checkedChildren="反转"

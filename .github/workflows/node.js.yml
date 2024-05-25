@@ -27,7 +27,7 @@ jobs:
     - run: yarn
     - run: yarn build
     - name: Deploy
-      uses: jamesives/github-pages-deploy-action@v4.2.2
+      uses: jamesives/github-pages-deploy-action@v4.6.1
       with: 
         branch: gh-pages-two
         folder: dist

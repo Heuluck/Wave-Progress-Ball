@@ -84,7 +84,7 @@ export function ProgressBall(props: ProgressBallProps) {
             points.push([x, offsetY + (y * waveHeight * caHeight) / 500]);
             ctx.lineTo(x, offsetY + (y * waveHeight * caHeight) / 500);
         }
-        console.log(points.length);
+        // console.log(points.length);
         //封闭路径
         ctx.lineTo(caWidth, caHeight);
         ctx.lineTo(waveOffsetX, caHeight);
