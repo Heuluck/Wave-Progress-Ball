@@ -5,6 +5,8 @@ import { BallSettingIS, ProgressBallProps } from "./";
 export function ProgressBall(props: ProgressBallProps) {
     const {
         value,
+        size = initialSetting.size,
+        magnify = initialSetting.magnify,
         initialRange = initialSetting.initialRange,
         lineWidth = initialSetting.lineWidth,
         lineColor = initialSetting.lineColor,
@@ -22,6 +24,8 @@ export function ProgressBall(props: ProgressBallProps) {
     const ctxRef = useRef(null);
     const isCircleDraw = useRef(false);
     const setting = useRef<BallSettingIS>({
+        size,
+        magnify,
         initialRange,
         lineWidth,
         lineColor,
@@ -36,8 +40,9 @@ export function ProgressBall(props: ProgressBallProps) {
         waveColor,
         bgWaveColor,
     });
-    let currentRange = useRef(initialRange);
+    const currentRange = useRef(initialRange);
     const targetRange = useRef(value);
+    const currentAnime = useRef<number>(0);
     let xOffset = 0;
 
     const drawCircle = (ctx: CanvasRenderingContext2D, circleYCenter: number, circleRadius: number) => {
@@ -68,10 +73,10 @@ export function ProgressBall(props: ProgressBallProps) {
         ctx.beginPath();
         //在整个轴长上取点
         for (let x = waveOffsetX; x < waveOffsetX + caHeight; x += 20 / caHeight) {
-            let y = 0.8 * Math.sin((reverse ? x : -x) * setting.current.waveWidth + offsetX);
-            let dY = caHeight * (1 - currentRange.current / 100);
-            points.push([x, dY + y * waveHeight]);
-            ctx.lineTo(x, dY + y * waveHeight);
+            const y = 0.8 * Math.sin(((reverse ? x : -x) * setting.current.waveWidth * 500) / caWidth + offsetX);
+            const offsetY = caHeight * (1 - currentRange.current / 100);
+            points.push([x, offsetY + (y * waveHeight * caHeight) / 500]);
+            ctx.lineTo(x, offsetY + (y * waveHeight * caHeight) / 500);
         }
         //封闭路径
         ctx.lineTo(caWidth, caHeight);
@@ -128,7 +133,26 @@ export function ProgressBall(props: ProgressBallProps) {
             setting.current.isReverse
         );
         xOffset += setting.current.speed;
-        requestAnimationFrame(() => render(ctx, caWidth, caHeight, circleYCenter, circleRadius));
+        currentAnime.current = requestAnimationFrame(() => {render(ctx, caWidth, caHeight, circleYCenter, circleRadius)});
+    };
+
+    const startAnime = () => {
+        if (ctxRef.current) {
+            const canvas: HTMLCanvasElement = ctxRef.current;
+            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+            //画布
+            const caWidth = canvas.width;
+            console.log("caWidth", caWidth);
+            const caHeight = canvas.height;
+            //圆
+            const circleYCenter = caHeight / 2; //圆心
+            const circleRadius = circleYCenter - 32; //圆半径
+            //波浪
+            ctx.lineWidth = setting.current.lineWidth;
+            render(ctx, caWidth, caHeight, circleYCenter, circleRadius);
+        } else {
+            console.log("ctxRef is null");
+        }
     };
 
     useEffect(() => {
@@ -138,6 +162,8 @@ export function ProgressBall(props: ProgressBallProps) {
     useEffect(() => {
         console.log("useEffect");
         setting.current = {
+            size,
+            magnify,
             initialRange,
             lineWidth,
             lineColor,
@@ -153,6 +179,7 @@ export function ProgressBall(props: ProgressBallProps) {
             bgWaveColor,
         };
     }, [
+        magnify,
         initialRange,
         lineWidth,
         lineColor,
@@ -170,6 +197,8 @@ export function ProgressBall(props: ProgressBallProps) {
 
     useEffect(() => {
         isCircleDraw.current = false;
+        setting.current.lineColor = lineColor;
+        setting.current.lineWidth = lineWidth;
         if (ctxRef.current) {
             const canvas: HTMLCanvasElement = ctxRef.current;
             const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -179,23 +208,17 @@ export function ProgressBall(props: ProgressBallProps) {
     }, [lineColor, lineWidth]);
 
     useEffect(() => {
-        if (ctxRef.current) {
-            const canvas: HTMLCanvasElement = ctxRef.current;
-            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-            //画布
-            const caWidth = canvas.width;
-            const caHeight = canvas.height;
-            //圆
-            const circleYCenter = caHeight / 2; //圆心
-            const circleRadius = circleYCenter - 32; //圆半径
-            //波浪
-            ctx.lineWidth = setting.current.lineWidth;
-            render(ctx, caWidth, caHeight, circleYCenter, circleRadius);
-        }
-    }, []);
+        isCircleDraw.current = false;
+        cancelAnimationFrame(currentAnime.current)
+        setting.current.size = size;
+        startAnime();
+    }, [size]);
+
+    useEffect(startAnime, []);
+
     return (
         <>
-            <canvas width="350" height="350" ref={ctxRef}>
+            <canvas width={size} height={size} ref={ctxRef}>
                 此设备似乎不支持canvas
             </canvas>
         </>

@@ -13,11 +13,13 @@ interface gradient {
 function App() {
     const [activeTabKey, setActiveTabKey] = useState<string>("common");
     const [value, setValue] = useState(50);
+    const [size, setSize] = useState<number>(350);
+    const [magnify, setMagnify] = useState<number>(1);
     const [initialRange, setInitialRange] = useState<number>(50);
     const [lineWidth, setLineWidth] = useState<number>(1);
     const [lineColor, setLineColor] = useState<string>("#bdc3c7");
     const [waveWidth, setWaveWidth] = useState<number>(0.018);
-    const [waveHeight, setWaveHeight] = useState<number>(18);
+    const [waveHeight, setWaveHeight] = useState<number>(20);
     const [speed, setSpeed] = useState<number>(0.01);
     const [bgWaveOffset, setBgWaveOffset] = useState<number>(0.7);
     const [isReverse, setIsReverse] = useState<boolean>(false);
@@ -37,6 +39,8 @@ function App() {
         parent.current && autoAnimate(parent.current);
     }, [parent]);
     const setting: BallSettingIS = {
+        size,
+        magnify,
         initialRange,
         lineWidth,
         lineColor,
@@ -78,10 +82,11 @@ function App() {
         common: (
             <>
                 <Form.Item label="液面高度">
-                    <Slider defaultValue={value} onChange={setValue} min={0} max={100} step={1} />
+                    <Slider key='height' defaultValue={value} onChange={setValue} min={0} max={100} step={1} />
                 </Form.Item>
                 <Form.Item label="流动速度">
                     <Slider
+                        key='speed'
                         defaultValue={speed}
                         onChange={(e) => {
                             setSpeed(e);
@@ -95,134 +100,152 @@ function App() {
         ),
         outfit: (
             <>
-                <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">
-                    <Form.Item label="外壳颜色">
-                        <ColorPicker
-                            defaultValue={lineColor}
-                            onChange={(color) => {
-                                setLineColor(color.toRgbString());
-                            }}
-                            showText
-                            format="hex"
-                        />
-                    </Form.Item>
-                    <Form.Item label="外壳粗细">
-                        <Slider
-                            defaultValue={lineWidth}
-                            onChange={(e) => {
-                                setLineWidth(e);
-                            }}
-                            min={1}
-                            max={10}
-                            step={1}
-                        />
-                    </Form.Item>
-                </Card>
-                <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="波浪">
-                    <Form.Item label="渐变切换">
-                        <Switch
-                            checkedChildren="渐变"
-                            unCheckedChildren="单色"
-                            defaultChecked={isGradient}
-                            onChange={(checked) => {
-                                if (checked) {
-                                    setWaveColor({
-                                        start: "#43CF73",
-                                        end: "#BCEC4F",
-                                    });
-                                    setBgWaveColor({
-                                        start: "rgba(130, 221, 95,0.5)",
-                                        end: "rgba(130, 221, 97,0.5)",
-                                    });
-                                    setIsGradient(checked);
-                                } else {
-                                    setWaveColor("#69d569");
-                                    setBgWaveColor("rgba(158, 226, 89,.5)");
-                                    setIsGradient(checked);
-                                }
-                            }}
-                        />
-                    </Form.Item>
-                    {isGradient ? (
-                        <>
-                            <Form.Item label="前景波浪颜色">
-                                <Space direction="vertical">
+                <Form.Item label="球体大小">
+                    <Slider key="size" defaultValue={size} onChangeComplete={setSize} min={10} max={1000} step={1} />
+                </Form.Item>
+                <Flex gap="middle" justify="center" wrap>
+                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">
+                        <Form.Item label="外壳颜色">
+                            <ColorPicker
+                                defaultValue={lineColor}
+                                onChange={(color) => {
+                                    setLineColor(color.toRgbString());
+                                }}
+                                showText
+                                format="hex"
+                            />
+                        </Form.Item>
+                        <Form.Item label="外壳粗细">
+                            <Slider
+                                key="lineWidth"
+                                defaultValue={lineWidth}
+                                onChange={(e) => {
+                                    setLineWidth(e);
+                                }}
+                                min={1}
+                                max={10}
+                                step={1}
+                            />
+                        </Form.Item>
+                    </Card>
+                    <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="波浪">
+                        <Form.Item label="渐变切换">
+                            <Switch
+                                checkedChildren="渐变"
+                                unCheckedChildren="单色"
+                                defaultChecked={isGradient}
+                                onChange={(checked) => {
+                                    if (checked) {
+                                        setWaveColor({
+                                            start: "#43CF73",
+                                            end: "#BCEC4F",
+                                        });
+                                        setBgWaveColor({
+                                            start: "rgba(130, 221, 95,0.5)",
+                                            end: "rgba(130, 221, 97,0.5)",
+                                        });
+                                        setIsGradient(checked);
+                                    } else {
+                                        setWaveColor("#69d569");
+                                        setBgWaveColor("rgba(158, 226, 89,.5)");
+                                        setIsGradient(checked);
+                                    }
+                                }}
+                            />
+                        </Form.Item>
+                        {isGradient ? (
+                            <>
+                                <Form.Item label="前景波浪颜色">
+                                    <Space direction="vertical">
+                                        <ColorPicker
+                                            key={1}
+                                            defaultValue={(waveColor as gradient).start}
+                                            onChange={(color) => {
+                                                setWaveColor((current) => {
+                                                    return {
+                                                        start: color.toRgbString(),
+                                                        end: (current as gradient).end,
+                                                    };
+                                                });
+                                            }}
+                                            showText
+                                            format="rgb"
+                                        />
+                                        <ColorPicker
+                                            key={2}
+                                            defaultValue={(waveColor as gradient).end}
+                                            onChange={(color) => {
+                                                setWaveColor((current) => {
+                                                    return {
+                                                        start: (current as gradient).start,
+                                                        end: color.toRgbString(),
+                                                    };
+                                                });
+                                            }}
+                                            showText
+                                            format="rgb"
+                                        />
+                                    </Space>
+                                </Form.Item>
+                                <Form.Item label="背景波浪颜色">
+                                    <Space direction="vertical">
+                                        <ColorPicker
+                                            key={3}
+                                            defaultValue={(bgWaveColor as gradient).start}
+                                            onChange={(color) => {
+                                                setBgWaveColor((current) => {
+                                                    return {
+                                                        start: color.toRgbString(),
+                                                        end: (current as gradient).end,
+                                                    };
+                                                });
+                                            }}
+                                            showText
+                                            format="rgb"
+                                        />
+                                        <ColorPicker
+                                            key={4}
+                                            defaultValue={(bgWaveColor as gradient).end}
+                                            onChange={(color) => {
+                                                setBgWaveColor((current) => {
+                                                    return {
+                                                        start: (current as gradient).start,
+                                                        end: color.toRgbString(),
+                                                    };
+                                                });
+                                            }}
+                                            showText
+                                            format="rgb"
+                                        />
+                                    </Space>
+                                </Form.Item>
+                            </>
+                        ) : (
+                            <>
+                                <Form.Item label="前景波浪颜色">
                                     <ColorPicker
-                                        key={1}
-                                        defaultValue={(waveColor as gradient).start}
+                                        defaultValue={waveColor as string}
                                         onChange={(color) => {
-                                            setWaveColor((current) => {
-                                                return { start: color.toRgbString(), end: (current as gradient).end };
-                                            });
+                                            setWaveColor(color.toRgbString());
                                         }}
                                         showText
                                         format="rgb"
                                     />
+                                </Form.Item>
+                                <Form.Item label="背景波浪颜色">
                                     <ColorPicker
-                                        key={2}
-                                        defaultValue={(waveColor as gradient).end}
+                                        defaultValue={bgWaveColor as string}
                                         onChange={(color) => {
-                                            setWaveColor((current) => {
-                                                return { start: (current as gradient).start, end: color.toRgbString() };
-                                            });
+                                            setBgWaveColor(color.toRgbString());
                                         }}
                                         showText
                                         format="rgb"
                                     />
-                                </Space>
-                            </Form.Item>
-                            <Form.Item label="背景波浪颜色">
-                                <Space direction="vertical">
-                                    <ColorPicker
-                                        key={3}
-                                        defaultValue={(bgWaveColor as gradient).start}
-                                        onChange={(color) => {
-                                            setBgWaveColor((current) => {
-                                                return { start: color.toRgbString(), end: (current as gradient).end };
-                                            });
-                                        }}
-                                        showText
-                                        format="rgb"
-                                    />
-                                    <ColorPicker
-                                        key={4}
-                                        defaultValue={(bgWaveColor as gradient).end}
-                                        onChange={(color) => {
-                                            setBgWaveColor((current) => {
-                                                return { start: (current as gradient).start, end: color.toRgbString() };
-                                            });
-                                        }}
-                                        showText
-                                        format="rgb"
-                                    />
-                                </Space>
-                            </Form.Item>
-                        </>
-                    ) : (
-                        <>
-                            <Form.Item label="前景波浪颜色">
-                                <ColorPicker
-                                    defaultValue={waveColor as string}
-                                    onChange={(color) => {
-                                        setWaveColor(color.toRgbString());
-                                    }}
-                                    showText
-                                    format="rgb"
-                                />
-                            </Form.Item>
-                            <Form.Item label="背景波浪颜色">
-                                <ColorPicker
-                                    defaultValue={bgWaveColor as string}
-                                    onChange={(color) => {
-                                        setBgWaveColor(color.toRgbString());
-                                    }}
-                                    showText
-                                    format="rgb"
-                                />
-                            </Form.Item>
-                        </>
-                    )}
-                </Card>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Card>
+                </Flex>
             </>
         ),
         wave: (
@@ -231,7 +254,7 @@ function App() {
                     <Slider key="waw" defaultValue={waveWidth} onChange={setWaveWidth} min={0} max={0.1} step={0.001} />
                 </Form.Item>
                 <Form.Item label="波浪高度">
-                    <Slider key="wah" defaultValue={waveHeight} onChange={setWaveHeight} min={0} max={30} step={1} />
+                    <Slider key="wah" defaultValue={waveHeight} onChange={setWaveHeight} min={0} max={80} step={1} />
                 </Form.Item>
                 <Flex gap="middle" justify="center">
                     <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="前景波浪">
@@ -332,7 +355,7 @@ function App() {
         <>
             <ProgressBall value={value} {...setting} />
             <Card title="设置" tabList={tabList} activeTabKey={activeTabKey} onTabChange={setActiveTabKey}>
-                <Flex gap="middle" vertical={activeTabKey !== "outfit"} ref={parent} justify="center" wrap>
+                <Flex gap="middle" vertical ref={parent} justify="center" wrap>
                     {contentList[activeTabKey]}
                 </Flex>
             </Card>
@@ -354,10 +377,10 @@ function ExampleCode(props: { setting: BallSettingIS }) {
             {`
 export function ExampleBall(){
     const [value, setValue] = useState(50)
-    const props = ${JSON.stringify(props.setting, null, 2)}
+    const settings = ${JSON.stringify(props.setting, null, 2)}
     return (
         <>
-            <ProgressBall value={value} {...props} />
+            <ProgressBall value={value} {...settings} />
         </>
     )
 }

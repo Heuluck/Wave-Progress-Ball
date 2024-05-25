@@ -1,4 +1,8 @@
 export interface BallSetting {
+    //大小（必须大于64）
+    size: number;
+    //放大倍数（不会真实放大，用于减少锯齿）
+    magnify: number;
     //初始加载时的进度
     initialRange?: number;
     //圆设置
@@ -35,6 +39,10 @@ export interface ProgressBallProps extends BallSetting {
 }
 
 export interface BallSettingIS {
+    //大小（必须大于64）
+    size: number;
+    //放大倍数（不会真实放大，用于减少锯齿）
+    magnify: number;
     //初始加载时的进度
     initialRange: number;
     //圆设置
