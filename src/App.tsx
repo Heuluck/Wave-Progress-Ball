@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BallSettingIS } from "./components/ball";
 import { ProgressBall } from "./components/ball/ball";
-import { Button, Card, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
+import { Button, Card, Collapse, ColorPicker, Flex, Form, Slider, Space, Switch } from "antd";
 import autoAnimate from "@formkit/auto-animate";
 import "./App.css";
 
@@ -316,6 +316,15 @@ function App() {
                     }}>
                     {JSON.stringify(setting, null, 2)}
                 </span>
+                <Collapse
+                    items={[
+                        {
+                            key: "1",
+                            label: "使用示例",
+                            children: <ExampleCode setting={setting} />,
+                        },
+                    ]}
+                />
             </>
         ),
     };
@@ -328,6 +337,32 @@ function App() {
                 </Flex>
             </Card>
         </>
+    );
+}
+
+function ExampleCode(props: { setting: BallSettingIS }) {
+    return (
+        <span
+            style={{
+                textAlign: "left",
+                userSelect: "text",
+                whiteSpace: "pre-wrap",
+                display: "block",
+                padding: "8px",
+                borderRadius: "8px",
+            }}>
+            {`
+export function ExampleBall(){
+    const [value, setValue] = useState(50)
+    const props = ${JSON.stringify(props.setting, null, 2)}
+    return (
+        <>
+            <ProgressBall value={value} {...props} />
+        </>
+    )
+}
+`}
+        </span>
     );
 }
 
