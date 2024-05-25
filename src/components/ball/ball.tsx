@@ -6,7 +6,7 @@ export function ProgressBall(props: ProgressBallProps) {
     const {
         value,
         size = initialSetting.size,
-        magnify = initialSetting.magnify,
+        magnifyAA = initialSetting.magnifyAA,
         initialRange = initialSetting.initialRange,
         lineWidth = initialSetting.lineWidth,
         lineColor = initialSetting.lineColor,
@@ -25,7 +25,7 @@ export function ProgressBall(props: ProgressBallProps) {
     const isCircleDraw = useRef(false);
     const setting = useRef<BallSettingIS>({
         size,
-        magnify,
+        magnifyAA,
         initialRange,
         lineWidth,
         lineColor,
@@ -132,8 +132,10 @@ export function ProgressBall(props: ProgressBallProps) {
             caHeight,
             setting.current.isReverse
         );
-        xOffset += setting.current.speed;
-        currentAnime.current = requestAnimationFrame(() => {render(ctx, caWidth, caHeight, circleYCenter, circleRadius)});
+        xOffset += setting.current.speed * setting.current.magnifyAA;
+        currentAnime.current = requestAnimationFrame(() => {
+            render(ctx, caWidth, caHeight, circleYCenter, circleRadius);
+        });
     };
 
     const startAnime = () => {
@@ -163,7 +165,7 @@ export function ProgressBall(props: ProgressBallProps) {
         console.log("useEffect");
         setting.current = {
             size,
-            magnify,
+            magnifyAA,
             initialRange,
             lineWidth,
             lineColor,
@@ -179,7 +181,7 @@ export function ProgressBall(props: ProgressBallProps) {
             bgWaveColor,
         };
     }, [
-        magnify,
+        magnifyAA,
         initialRange,
         lineWidth,
         lineColor,
@@ -209,16 +211,20 @@ export function ProgressBall(props: ProgressBallProps) {
 
     useEffect(() => {
         isCircleDraw.current = false;
-        cancelAnimationFrame(currentAnime.current)
+        cancelAnimationFrame(currentAnime.current);
         setting.current.size = size;
         startAnime();
-    }, [size]);
+    }, [size, magnifyAA]);
 
     useEffect(startAnime, []);
 
     return (
         <>
-            <canvas width={size} height={size} ref={ctxRef}>
+            <canvas
+                width={size * magnifyAA}
+                height={size * magnifyAA}
+                style={{ width: size, height: size }}
+                ref={ctxRef}>
                 此设备似乎不支持canvas
             </canvas>
         </>

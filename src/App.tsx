@@ -14,7 +14,7 @@ function App() {
     const [activeTabKey, setActiveTabKey] = useState<string>("common");
     const [value, setValue] = useState(50);
     const [size, setSize] = useState<number>(350);
-    const [magnify, setMagnify] = useState<number>(1);
+    const [magnifyAA, setMagnifyAA] = useState<number>(1);
     const [initialRange, setInitialRange] = useState<number>(50);
     const [lineWidth, setLineWidth] = useState<number>(1);
     const [lineColor, setLineColor] = useState<string>("#bdc3c7");
@@ -40,7 +40,7 @@ function App() {
     }, [parent]);
     const setting: BallSettingIS = {
         size,
-        magnify,
+        magnifyAA,
         initialRange,
         lineWidth,
         lineColor,
@@ -101,7 +101,10 @@ function App() {
         outfit: (
             <>
                 <Form.Item label="球体大小">
-                    <Slider key="size" defaultValue={size} onChangeComplete={setSize} min={10} max={1000} step={1} />
+                    <Slider key="size" defaultValue={size} onChangeComplete={setSize} min={70} max={1000} step={1} />
+                </Form.Item>
+                <Form.Item label="抗锯齿">
+                    <Slider key="maa" defaultValue={magnifyAA} onChangeComplete={setMagnifyAA} min={1} max={10} step={1} />
                 </Form.Item>
                 <Flex gap="middle" justify="center" wrap>
                     <Card style={{ marginTop: 16, width: "20vw" }} type="inner" title="圆形外壳">

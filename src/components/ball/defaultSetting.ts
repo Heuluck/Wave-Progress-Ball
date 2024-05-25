@@ -2,7 +2,7 @@ import { BallSettingIS } from ".";
 
 export const initialSetting: BallSettingIS = {
     size: 350,
-    magnify: 1,
+    magnifyAA: 1,
     initialRange: 50,
     lineWidth: 1,
     lineColor: "#bdc3c7",
