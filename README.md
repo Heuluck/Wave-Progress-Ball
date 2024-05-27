@@ -1,13 +1,17 @@
-# 波浪进度球
+# 波浪进度球 Wave Progress Ball for React
 ![Deploy Status](https://github.com/Heuluck/Wave-Progress-Ball/actions/workflows/node.js.yml/badge.svg)
 
 这是一个基于 React，使用`<canvas>`实现的波浪进度球组件。进度球可以自定义颜色、大小、进度等。自定义内容详见[自定义](#参数-props)。
 
-## 预览
+## 新版本 New Version
+
+[新版本 Wave-Progress-Ball](https://github.com/Heuluck/Wave-Progress-Ball-v2)使用`<svg>`实现，较此版本性能和图形优势更为明显，但是渐变效果却不如此版本平滑，Demo：[Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball-v2/)。
+
+## 预览 Preview
 
 [Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball/)
 
-## 安装
+## 安装 Manual Install
 
 暂时没有发布 npm 包，所以需要手动安装。
 
@@ -15,7 +19,7 @@
 
 `git clone`到本地后，复制`src/components/ball`文件夹到自己的项目的`components`中。
 
-## 使用
+## 使用 Usage
 
 ### 基本用法
 
@@ -26,11 +30,11 @@ return <ProgressBall value={value} />;
 
 ### 自定义
 
-#### 快速生成
+#### 快速生成 Setting Generator
 
 在[Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball/)或本地部署本仓库，在页面中配置好参数，在“导出设置”选项卡点击复制按钮即可。
 
-#### 示例
+#### 示例 Example
 
 ```tsx
 export function ExampleBall() {
