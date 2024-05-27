@@ -4,13 +4,14 @@
 
 这是一个基于 React，使用`<canvas>`实现的波浪进度球组件。进度球可以自定义颜色、大小、进度等。自定义内容详见[自定义](#参数-props)。
 
+## 预览 Preview
+
+[Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball/)
+
 ## 新版本 New Version
 
 [新版本 Wave-Progress-Ball](https://github.com/Heuluck/Wave-Progress-Ball-v2)使用`<svg>`实现，较此版本性能和图形优势更为明显，但是渐变效果却不如此版本平滑，Demo：[Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball-v2/)。
 
-## 预览 Preview
-
-[Github Pages 页面](https://heuluck.github.io/Wave-Progress-Ball/)
 
 ## 安装 Manual Install
 
