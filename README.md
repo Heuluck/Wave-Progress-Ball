@@ -1,4 +1,5 @@
 # 波浪进度球 Wave Progress Ball for React
+
 ![Deploy Status](https://github.com/Heuluck/Wave-Progress-Ball/actions/workflows/node.js.yml/badge.svg)
 
 这是一个基于 React，使用`<canvas>`实现的波浪进度球组件。进度球可以自定义颜色、大小、进度等。自定义内容详见[自定义](#参数-props)。
@@ -73,22 +74,22 @@ export function ExampleBall() {
 
 #### 参数 Props
 
-| 参数         | 说明                       | 类型                                                      | 默认值 | 必填  |
-| ------------ | -------------------------- | --------------------------------------------------------- | ------ | ----- |
-| value        | 当前进度                   | number                                                    | "-"    | true  |
-| size         | 球的大小                   | number                                                    | "-"    | false |
-| magnifyAA    | 抗锯齿(简单放大实现)       | number                                                    | "-"    | false |
-| initialRange | 初始加载时的进度           | number                                                    | "-"    | false |
-| lineWidth    | 圆形的线宽                 | number                                                    | "-"    | false |
-| lineColor    | 圆形的线颜色               | string                                                    | "-"    | false |
-| waveWidth    | 波浪的宽度                 | number                                                    | "-"    | false |
-| waveHeight   | 波浪的高度                 | number                                                    | "-"    | false |
-| speed        | 波浪的速度                 | number                                                    | "-"    | false |
-| waveQuality  | 波浪的质量                 | number                                                    | "-"    | false |
-| bgWaveOffset | 背景波浪偏移量             | number                                                    | "-"    | false |
-| isReverse    | 前景波浪是否反向           | boolean                                                   | "-"    | false |
-| isReverseBg  | 背景波浪是否反向           | boolean                                                   | "-"    | false |
-| isShowBg     | 是否显示背景波浪           | boolean                                                   | "-"    | false |
-| isGradient   | 波浪颜色是否为渐变         | boolean                                                   | "-"    | false |
-| waveColor    | 前景波浪颜色（渐变或单色） | string &nbsp;&#124;&nbsp; { start: string; end: string; } | "-"    | false |
-| bgWaveColor  | 背景波浪颜色（渐变或单色） | string &nbsp;&#124;&nbsp; { start: string; end: string; } | "-"    | false |
+| 参数         | 说明                       | 类型                                                      | 默认值                                                           | 必填  |
+| ------------ | -------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- | ----- |
+| value        | 当前进度                   | number                                                    | "-"                                                              | true  |
+| size         | 球的大小                   | number                                                    | 350                                                              | false |
+| magnifyAA    | 抗锯齿(简单放大实现)       | number                                                    | 2                                                                | false |
+| initialRange | 初始加载时的进度           | number                                                    | 50                                                               | false |
+| lineWidth    | 圆形的线宽                 | number                                                    | 1                                                                | false |
+| lineColor    | 圆形的线颜色               | string                                                    | "#bdc3c7"                                                        | false |
+| waveWidth    | 波浪的宽度                 | number                                                    | 0.018                                                            | false |
+| waveHeight   | 波浪的高度                 | number                                                    | 20                                                               | false |
+| speed        | 波浪的速度                 | number                                                    | 0.002                                                            | false |
+| waveQuality  | 波浪的质量                 | number                                                    | 3                                                                | false |
+| bgWaveOffset | 背景波浪偏移量             | number                                                    | 0.7                                                              | false |
+| isReverse    | 前景波浪是否反向           | boolean                                                   | false                                                            | false |
+| isReverseBg  | 背景波浪是否反向           | boolean                                                   | false                                                            | false |
+| isShowBg     | 是否显示背景波浪           | boolean                                                   | true                                                             | false |
+| isGradient   | 波浪颜色是否为渐变         | boolean                                                   | true                                                             | false |
+| waveColor    | 前景波浪颜色（渐变或单色） | string &nbsp;&#124;&nbsp; { start: string; end: string; } | {start: "#43CF73",end: "#BCEC4F",}                               | false |
+| bgWaveColor  | 背景波浪颜色（渐变或单色） | string &nbsp;&#124;&nbsp; { start: string; end: string; } | {start: "rgba(130, 221, 95,0.5)",end: "rgba(130, 221, 97,0.5)",} | false |
